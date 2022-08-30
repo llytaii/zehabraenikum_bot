@@ -1,0 +1,8 @@
+bits (utf8 <-> bits)
+morse
+qr
+wttr
+
+translation? (deepl)
+tts?
+yt dl
