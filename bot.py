@@ -1,8 +1,13 @@
-from modules import bits, wttr, morse, qr, translator, tts
+from modules import bits, wttr, morse, qr, translator, tts 
 
 from io import BytesIO
 from telegram     import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters
+
+def id_cmd(update: Update, context: CallbackContext):
+    bot = context.bot
+    chat_id = update.effective_chat.id
+    bot.send_message(chat_id=chat_id, text=chat_id)
 
 def tts_cmd(update: Update, context: CallbackContext):
     bot = context.bot
@@ -65,6 +70,7 @@ def morse_cmd(update: Update, context: CallbackContext):
     bot.send_message(chat_id=chat_id, text=text)
 
 def help_cmd(update: Update, context: CallbackContext):
+    wiki_help   = '/wiki [Begriff] -> Englische Zusammenfassung des Artikels'
     tts_help    = '/tts [Sprache] [Text] -> mp3 in [Sprache](en, de, ru, etc) mit [Text]'
     trans_help  = '/t [Sprache] [Text] -> Übersetzt [Text] in [Sprache](en, de, ru, etc)'
     qr_help     = '/qr [Text] -> Text <-> QR Code \n(Dekodierung: /qr als Bildbeschreibung)'
@@ -79,6 +85,7 @@ with open("token", "r") as f:
     token = f.read().strip()
 updater = Updater(token)
 
+updater.dispatcher.add_handler(CommandHandler("id", id_cmd))
 updater.dispatcher.add_handler(CommandHandler("t", translate_cmd))
 updater.dispatcher.add_handler(CommandHandler("tts", tts_cmd))
 updater.dispatcher.add_handler(MessageHandler(Filters.caption(update=['/qr']), qr_decode_cmd))
