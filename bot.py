@@ -1,8 +1,18 @@
-from modules import bits, wttr, morse, qr, translator, tts 
+from modules import bits, wttr, morse, qr, translator, tts, ocr
 
 from io import BytesIO
 from telegram     import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters
+
+def ocr_cmd(update: Update, context: CallbackContext):
+    bot = context.bot
+    chat_id = update.effective_chat.id
+
+    buffer = BytesIO()
+    update.message.photo[-1].get_file().download(out=buffer)
+
+    text = ocr.image_to_string(buffer)
+    bot.send_message(chat_id=chat_id, text=text)
 
 def id_cmd(update: Update, context: CallbackContext):
     bot = context.bot
@@ -70,6 +80,8 @@ def morse_cmd(update: Update, context: CallbackContext):
     bot.send_message(chat_id=chat_id, text=text)
 
 def help_cmd(update: Update, context: CallbackContext):
+    id_help     = '/id -> Eigene Chat ID'
+    ocr_help    = '/ocr (als Bildbeschreibung) -> Extrahiert Text aus dem Bild'
     wiki_help   = '/wiki [Begriff] -> Englische Zusammenfassung des Artikels'
     tts_help    = '/tts [Sprache] [Text] -> mp3 in [Sprache](en, de, ru, etc) mit [Text]'
     trans_help  = '/t [Sprache] [Text] -> Übersetzt [Text] in [Sprache](en, de, ru, etc)'
@@ -89,6 +101,7 @@ updater.dispatcher.add_handler(CommandHandler("id", id_cmd))
 updater.dispatcher.add_handler(CommandHandler("t", translate_cmd))
 updater.dispatcher.add_handler(CommandHandler("tts", tts_cmd))
 updater.dispatcher.add_handler(MessageHandler(Filters.caption(update=['/qr']), qr_decode_cmd))
+updater.dispatcher.add_handler(MessageHandler(Filters.caption(update=['/ocr']), ocr_cmd))
 updater.dispatcher.add_handler(CommandHandler("qr", qr_create_cmd))
 updater.dispatcher.add_handler(CommandHandler("wttr", wttr_cmd))
 updater.dispatcher.add_handler(CommandHandler("bits", bits_cmd))
