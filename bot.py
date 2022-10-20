@@ -89,7 +89,7 @@ def help_cmd(update: Update, context: CallbackContext):
     wttr_help   = '/wttr [Orte] -> Wetterbericht für alle Orte (default: Weilheim)'
     morse_help  = '/morse [Text] -> Morse <-> Text'
     binary_help = '/bits [Text] -> Bits  <-> Text (utf8)'
-    text = tts_help + '\n' + trans_help + '\n' + qr_help + '\n' + wttr_help + '\n' + morse_help + '\n' + binary_help
+    text = id_help + '\n' + ocr_help + '\n' + tts_help + '\n' + trans_help + '\n' + qr_help + '\n' + wttr_help + '\n' + morse_help + '\n' + binary_help
     context.bot.send_message(chat_id=update.effective_chat.id, text=text)
 
 # main
